@@ -31,21 +31,31 @@ setTimeout(() => {
         allPlayerHeaders.forEach(player => player.getElementsByClassName('arrowTitle')[0].click())
 
         setTimeout(() => {
-            let message = ''
+            let csvContent = 'data:text/csv;charset=utf-8,'
             teamBoxes.forEach(team => {
-                message += `<b>${team.getElementsByClassName('arrowTitle')[0].innerHTML.split(">")[1].split("<span")[0].trim()}</b>`
-                message += '<br/>'
+
+                csvContent += `${team.getElementsByClassName('arrowTitle')[0].innerHTML.split(">")[1].split("<span")[0].trim()},`
                 const teamPlayers = Array.from(team.getElementsByClassName('boxContent')[0].getElementsByClassName('collapsibleBox box'))
                 teamPlayers.forEach(player => {
                     const playerName = player.getElementsByClassName('arrowTitle')[0].innerHTML.split(">")[1].split("<span")[0].trim()
                     const faction = player.getElementsByClassName('listsList)')[0].children[0].children[0].children[1].children[0].innerText
-                    message += `${factionMapping[faction]} / ${playerName}`
-                    message += '<br/>'
+                    csvContent += `${factionMapping[faction]} / ${playerName},,`
                 })
-                message += '<br/>'
+                csvContent += '\r\n'
+                csvContent += 'Maik,,,,,,\r\n'
+                csvContent += 'Scrub,,,,,,\r\n'
+                csvContent += 'Blacky,,,,,,\r\n'
+                csvContent += 'Guido,,,,,,\r\n'
+                csvContent += 'Simon,,,,,,\r\n'
+                csvContent += '\r\n'
             })
 
-            document.body.innerHTML = message
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "team_export.csv");
+            document.body.appendChild(link);
+            link.click();
 
         }, 1000);
     }, 100);
