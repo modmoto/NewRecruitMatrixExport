@@ -1,3 +1,16 @@
+const playerNames = [
+    'Player 1',
+    'Player 2',
+    'Player 3',
+    'Player 4',
+    'Player 5',
+    'Player 6',
+    'Player 7',
+    'Player 8'
+]
+
+const amountOfAdditionalColumnsBetweenPlayers = 0
+
 const teamButton = Array.from(document.getElementsByClassName('collapsibleBox box'))[2]
 teamButton.getElementsByClassName('arrowTitle')[0].click()
 let teamBoxes = []
@@ -33,20 +46,26 @@ setTimeout(() => {
         setTimeout(() => {
             let csvContent = 'data:text/csv;charset=utf-8,'
             teamBoxes.forEach(team => {
-
-                csvContent += `${team.getElementsByClassName('arrowTitle')[0].innerHTML.split(">")[1].split("<span")[0].trim()},`
+                let htmlTeamName = team.getElementsByClassName('arrowTitle')[0].innerHTML;
+                const teamNameRaw = htmlTeamName.split(">")[1].split("<span")[0];
+                const teamName = teamNameRaw.trim().replace(/,/g, ' ');
+                csvContent += teamName
                 const teamPlayers = Array.from(team.getElementsByClassName('boxContent')[0].getElementsByClassName('collapsibleBox box'))
                 teamPlayers.forEach(player => {
-                    const playerName = player.getElementsByClassName('arrowTitle')[0].innerHTML.split(">")[1].split("<span")[0].trim()
-                    const faction = player.getElementsByClassName('listsList)')[0].children[0].children[0].children[1].children[0].innerText
-                    csvContent += `${factionMapping[faction]} / ${playerName},,`
+                    const playerName = player.getElementsByClassName('arrowTitle')[0].innerHTML.split(">")[1].split("<span")[0].trim().replace(/,/g, ' ')
+                    let faction = player.getElementsByClassName('listsList)')[0].children[0].children[0].children[1].children[0].innerText
+                    if (!faction) {
+                        faction = player.getElementsByClassName('listsList)')[0].children[0].children[0].children[1].innerHTML.split("<br>")[0]
+                    }
+                    csvContent += `${factionMapping[faction]} / ${playerName},${",".repeat(amountOfAdditionalColumnsBetweenPlayers)}`
                 })
                 csvContent += '\r\n'
-                csvContent += 'Maik,,,,,,\r\n'
-                csvContent += 'Scrub,,,,,,\r\n'
-                csvContent += 'Blacky,,,,,,\r\n'
-                csvContent += 'Guido,,,,,,\r\n'
-                csvContent += 'Simon,,,,,,\r\n'
+
+                const commasForEmptyLine = ",".repeat(teamPlayers.length * (1 + amountOfAdditionalColumnsBetweenPlayers))
+                for (let index = 0; index < teamPlayers.length; index++) {
+                    csvContent += `${playerNames[index]}${commasForEmptyLine}\r\n`
+                }
+
                 csvContent += '\r\n'
             })
 
