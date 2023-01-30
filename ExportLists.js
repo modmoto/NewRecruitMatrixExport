@@ -1,9 +1,9 @@
 const playerNames = [
-    'Player 1',
-    'Player 2',
-    'Player 3',
-    'Player 4',
-    'Player 5',
+    'Heiko',
+    'Marc S.',
+    'Marc B.',
+    'Christian',
+    'Simon',
     'Player 6',
     'Player 7',
     'Player 8'
@@ -46,7 +46,7 @@ function extractPlayerDetails(player) {
     const listItem = playerListItem.getElementsByTagName('div')[0]
     const factionItem = listItem.getElementsByTagName('b')[0]
     const faction = factionItem ? factionItem.innerText : listItem.innerHTML.split("<br>")[0]
-    return `${factionMapping[faction]} / ${playerName},${",".repeat(amountOfAdditionalColumnsBetweenPlayers)}\r\n`
+    return `${factionMapping[faction]} / ${playerName},${",".repeat(amountOfAdditionalColumnsBetweenPlayers)}`
 }
 
 function createCsvDownload(csvContent) {
@@ -66,6 +66,7 @@ setTimeout(() => {
         setTimeout(() => {
             players.forEach(player => {
                 csvContent += extractPlayerDetails(player)
+                csvContent += '\r\n'
             })
 
             createCsvDownload(csvContent)
@@ -84,11 +85,12 @@ setTimeout(() => {
                     let htmlTeamName = team.getElementsByClassName('arrowTitle')[0].innerHTML;
                     const teamNameRaw = htmlTeamName.split(">")[1].split("<span")[0];
                     const teamName = teamNameRaw.trim().replace(/,/g, ' ');
-                    csvContent += teamName
+                    csvContent += `${teamName},`
                     const teamPlayers = Array.from(team.getElementsByClassName('boxContent')[0].getElementsByClassName('collapsibleBox box'))
                     teamPlayers.forEach(player => {
                         csvContent += extractPlayerDetails(player)
                     })
+                    csvContent += '\r\n'
 
                     const commasForEmptyLine = ",".repeat(teamPlayers.length * (1 + amountOfAdditionalColumnsBetweenPlayers))
                     for (let index = 0; index < teamPlayers.length; index++) {
